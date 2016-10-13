@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+
+import timeit
+
+class BrickStash:
+  def __init__(self, num_bricks):
+    self.num_bricks = num_bricks
+    self.staircases = []
+    self.get_combos(self.num_bricks)
+
+  def get_combos(self, lval, depth=1, carried=None, rval=0):
+    #print("brand new iteration: %d" % depth)
+    if carried is None:
+      carried = []
+    if rval == 0:
+      lval -= 1
+      rval += 1
+    carried.sort()
+    #print("num: %d, lval: %s, rval: %s, carried: %s, depth: %d -- FIRST" % (self.num_bricks, lval, rval, carried, depth))
+    while lval > rval:
+      #print("num: %d, lval: %s, rval: %s, carried: %s, depth: %d -- SECOND" % (self.num_bricks, lval, rval, carried, depth))
+      staircase = set([rval] + [lval] + carried)
+      if lval in carried or rval in carried or staircase in self.staircases:
+        #print("duplicate: %d" % depth)
+        print("call: %d, %d, %s, %d" % (lval-1, depth+1, carried, rval+1))
+        return self.get_combos(lval-1, depth+1, carried, rval+1)
+      self.staircases.append(staircase)
+      #print("success: %d" % depth)
+      to_carry = carried + [rval]
+      print("call: %d, %d, %s, %d" % (lval-1, depth+1, to_carry, 1))
+      self.get_combos(lval-1, depth+1, to_carry, 1)
+      lval -= 1
+      rval += 1
+
+def answer(n):
+ results = BrickStash(n)
+ print(n),
+# print(results.staircases),
+# print(len(results.staircases)),
+ print("%03d" % len([i for i in results.staircases if len(i) == 2])),
+ print("%03d" % len([i for i in results.staircases if len(i) == 3])),
+ print("%03d" % len([i for i in results.staircases if len(i) == 4])),
+ print("%03d" % len([i for i in results.staircases if len(i) == 5])),
+ print("%03d" % len([i for i in results.staircases if len(i) == 6])),
+ print("%03d" % len([i for i in results.staircases if len(i) == 7])),
+ print("%03d" % len([i for i in results.staircases if len(i) == 8])),
+ print("%03d" % len([i for i in results.staircases if len(i) == 9])),
+ print("%03d" % len([i for i in results.staircases if len(i) == 10]))
+ #print(results.staircases)
+ return len(results.staircases)
+
+for i in range(3,40):
+  answer(i)
+#answer(12)
+
+#t = timeit.Timer('answer(10)', "from __main__ import answer")
+#print t.timeit(100)
+#t = timeit.Timer('answer(20)', "from __main__ import answer")
+#print t.timeit(100)
+#t = timeit.Timer('answer(40)', "from __main__ import answer")
+#print t.timeit(100)
+
+

@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+
+import numpy
+import matplotlib.pyplot as plt
+import timeit
+
+class BrickStash:
+  def __init__(self, num_bricks):
+    self.num_bricks = num_bricks
+    self.staircases = []
+    self.get_combos(self.num_bricks)
+
+  def get_combos(self, lval, depth=1, carried=None, rval=0):
+    if carried is None:
+      carried = []
+    if rval == 0:
+      lval -= 1
+      rval += 1
+    carried.sort()
+    while lval > rval:
+      print("num: %d, lval: %s, rval: %s, carried: %s" % (self.num_bricks, lval, rval, carried))
+      if lval in carried or rval in carried:
+        print("duplicate_numbers")
+        lval -= 1
+        rval += 1
+        while lval in carried or rval in carried:
+          lval -= 1
+          rval += 1
+        return self.get_combos(lval, depth+1, carried, rval)
+      staircase = set([rval] + [lval] + carried)
+      if staircase in self.staircases:
+        print("duplicate_staircase")
+        lval -= 1
+        rval += 1
+        while lval in carried or rval in carried:
+          lval -= 1
+          rval += 1
+        return self.get_combos(lval, depth+1, carried, rval)
+      self.staircases.append(staircase)
+      #print("%s lval: %s, rval: %s, carried: %s" % (depth_str, lval, rval, carried))
+      #print("success")
+      # print("num bricks: %s, lval: %s, rval: %s, carried: %s" % (self.num_bricks, lval, rval, carried))
+      to_carry = carried + [rval]
+      new_rval = 1
+      lval -= 1
+      while lval in to_carry or new_rval in to_carry:
+        lval -= 1
+        new_rval += 1
+      self.get_combos(lval, depth+1, to_carry, new_rval)
+
+def answer(n):
+ results = BrickStash(n)
+# print(results.staircases)
+ print(n),
+ print(len(results.staircases))
+# print(len([i for i in results.staircases if len(i) == 2])),
+# print(len([i for i in results.staircases if len(i) == 3])),
+# print(len([i for i in results.staircases if len(i) == 4])),
+# print(len([i for i in results.staircases if len(i) == 5])),
+# print(len([i for i in results.staircases if len(i) == 6])),
+# print(len([i for i in results.staircases if len(i) == 7])),
+# print(len([i for i in results.staircases if len(i) == 8])),
+# print(len([i for i in results.staircases if len(i) == 9])),
+# print(len([i for i in results.staircases if len(i) == 10]))
+# return len(results.staircases)
+ return (len(results.staircases), 
+        len([i for i in results.staircases if len(i) == 2]), 
+        len([i for i in results.staircases if len(i) == 3]),
+        len([i for i in results.staircases if len(i) == 4]),
+        len([i for i in results.staircases if len(i) == 5]),
+        len([i for i in results.staircases if len(i) == 6]),
+        len([i for i in results.staircases if len(i) == 7]),
+        len([i for i in results.staircases if len(i) == 8]),
+        len([i for i in results.staircases if len(i) == 9]),
+        len([i for i in results.staircases if len(i) == 10]))
+
+#t = timeit.Timer('answer(50)', "from __main__ import answer")
+#print t.timeit(100)
+#t = timeit.Timer('answer(100)', "from __main__ import answer")
+#print t.timeit(100)
+#t = timeit.Timer('answer(200)', "from __main__ import answer")
+#print t.timeit(100)
+
+
+def plot():
+  x = []
+  y = [ [] for i in range(9) ]
+#  y3 = []
+#  y4 = []
+#  y5 = []
+#  y6 = []
+#  y7 = []
+#  y8 = []
+#  y9 = []
+#  y10 = []
+
+  for i in range(1,50):
+    results = answer(i)
+    x.append(i)
+    y[0].append(results[1])
+    y[1].append(results[2])
+    y[2].append(results[3])
+    y[3].append(results[4])
+    y[4].append(results[5])
+    y[5].append(results[6])
+    y[6].append(results[7])
+    y[7].append(results[8])
+    y[8].append(results[9])
+  
+  return [ numpy.polyfit(x,y[i],len(x)) for i in range(9) ]
+
+#  plt.plot(x,y2, label='y2')
+#  plt.plot(x,y3, label='y3')
+#  plt.plot(x,y4, label='y4')
+#  plt.plot(x,y5, label='y5')
+#  plt.plot(x,y6, label='y6')
+#  plt.plot(x,y7, label='y7')
+#  plt.plot(x,y8, label='y8')
+#  plt.plot(x,y9, label='y9')
+#  plt.plot(x,y10, label='y10')
+#  plt.legend(loc='upper center', shadow=True)
+#  plt.show()
+#
+
+stuff = plot()
+#for i,v in enumerate(stuff):
+#  print("%d: " % i), 
+#  print(v)
+
+results = []
+for i in range(50):
+    results.append( sum( [ i * stuff[j][i] for j in range(9) ] ))
+
+print(results)
+#for i in range(40):
+#  results = answer(i)
+#answer(50)
+

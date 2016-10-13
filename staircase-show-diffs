@@ -1,0 +1,116 @@
+#!/usr/bin/env python
+
+import timeit
+
+class BrickStash:
+  def __init__(self, num_bricks):
+    self.num_bricks = num_bricks
+    self.staircases = []
+    self.get_combos(self.num_bricks)
+
+  def get_combos(self, lval, depth=1, carried=None, rval=0):
+    if carried is None:
+      carried = []
+    if rval == 0:
+      lval -= 1
+      rval += 1
+    depth_str = ''
+    for i in range(depth):
+      depth_str += '\t'
+    carried.sort()
+    #print(self.num_bricks),
+    while lval > rval:
+      #print("%s lval: %s, rval: %s, carried: %s" % (depth_str, lval, rval, carried)),
+      if lval in carried or rval in carried:
+        print("duplicate_numbers")
+        lval -= 1
+        rval += 1
+        while lval in carried or rval in carried:
+          lval -= 1
+          rval += 1
+        return self.get_combos(lval, depth+1, carried, rval)
+      staircase = set([rval] + [lval] + carried)
+      if staircase in self.staircases:
+        #print("duplicate_staircase")
+        lval -= 1
+        rval += 1
+        while lval in carried or rval in carried:
+          lval -= 1
+          rval += 1
+        return self.get_combos(lval, depth+1, carried, rval)
+      self.staircases.append(staircase)
+      #print("%s lval: %s, rval: %s, carried: %s" % (depth_str, lval, rval, carried))
+      #print("success")
+      # print("num bricks: %s, lval: %s, rval: %s, carried: %s" % (self.num_bricks, lval, rval, carried))
+      to_carry = carried + [rval]
+      new_rval = 1
+      lval -= 1
+      while lval in to_carry or new_rval in to_carry:
+        lval -= 1
+        new_rval += 1
+      self.get_combos(lval, depth+1, to_carry, new_rval)
+
+stash = []
+def answer(n):
+ results = BrickStash(n)
+ stash.append(results)
+# print(results.staircases)
+# print(len(results.staircases))
+ if len(stash) > 2:
+  print(n),
+  print(len(stash[-1].staircases)-len(stash[-2].staircases))
+ else:
+  print(n)
+# print(len([i for i in results.staircases if len(i) == 2])),
+# print(len([i for i in results.staircases if len(i) == 3])),
+# print(len([i for i in results.staircases if len(i) == 4])),
+# print(len([i for i in results.staircases if len(i) == 5])),
+# print(len([i for i in results.staircases if len(i) == 6])),
+# print(len([i for i in results.staircases if len(i) == 7])),
+# print(len([i for i in results.staircases if len(i) == 8])),
+# print(len([i for i in results.staircases if len(i) == 9])),
+# print(len([i for i in results.staircases if len(i) == 10]))
+ return len(results.staircases)
+# return (len(results.staircases), 
+#        len([i for i in results.staircases if len(i) == 2]), 
+#        len([i for i in results.staircases if len(i) == 3]),
+#        len([i for i in results.staircases if len(i) == 4]),
+#        len([i for i in results.staircases if len(i) == 5]))
+
+#t = timeit.Timer('answer(50)', "from __main__ import answer")
+#print t.timeit(100)
+#t = timeit.Timer('answer(100)', "from __main__ import answer")
+#print t.timeit(100)
+#t = timeit.Timer('answer(200)', "from __main__ import answer")
+#print t.timeit(100)
+
+
+def plot():
+  import numpy as np
+  import matplotlib.pyplot as plt
+  x = []
+  y2 = []
+  y3 = []
+  y4 = []
+  y5 = []
+
+  for i in range(1,50):
+    results = answer(i)
+    x.append(i)
+    y2.append(results[1])
+    y3.append(results[2])
+    y4.append(results[3])
+    y5.append(results[4])
+  
+  plt.plot(x,y2, label='y2')
+  plt.plot(x,y3, label='y3')
+  plt.plot(x,y4, label='y4')
+  plt.plot(x,y5, label='y5')
+  plt.legend(loc='upper center', shadow=True)
+  plt.show()
+
+#plot()
+for i in range(40):
+  results = answer(i)
+#answer(50)
+
