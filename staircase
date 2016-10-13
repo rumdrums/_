@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import timeit
+import numpy as np
+import matplotlib.pyplot as plt
 
 ## number of tuples:
 # (n-1)/2, round down
@@ -50,8 +52,10 @@ def answer(n):
  print(n),
  # print(results.staircases),
  # print(len(results.staircases))
+ print(len([i for i in results.staircases if len(i) == 2])),
  print(len([i for i in results.staircases if len(i) == 3])),
- print((n-2)/2)
+ print(len([i for i in results.staircases if len(i) == 4])),
+ print(len([i for i in results.staircases if len(i) == 5]))
  return (len(results.staircases), 
         len([i for i in results.staircases if len(i) == 2]), 
         len([i for i in results.staircases if len(i) == 3]),
@@ -66,27 +70,26 @@ def answer(n):
 # print t.timeit(100)
 
 
-x = []
-y2 = []
-y3 = []
-y4 = []
-y5 = []
+def plot():
+  x = []
+  y2 = []
+  y3 = []
+  y4 = []
+  y5 = []
 
-for i in range(1,50):
-  x.append(i)
-  y2.append(answer(i)[1])
-  y3.append(answer(i)[2])
-  y4.append(answer(i)[3])
-  y5.append(answer(i)[4])
-# print(answer(10))
+  for i in range(1,50):
+    results = answer(i)
+    x.append(i)
+    y2.append(results[1])
+    y3.append(results[2])
+    y4.append(results[3])
+    y5.append(results[4])
+  
+  plt.plot(x,y2, label='y2')
+  plt.plot(x,y3, label='y3')
+  plt.plot(x,y4, label='y4')
+  plt.plot(x,y5, label='y5')
+  plt.legend(loc='upper center', shadow=True)
+  plt.show()
 
-import numpy as np
-import matplotlib.pyplot as plt
-
-plt.plot(x,y2, label='y2')
-plt.plot(x,y3, label='y3')
-plt.plot(x,y4, label='y4')
-plt.plot(x,y5, label='y5')
-plt.legend(loc='upper center', shadow=True)
-plt.show()
-
+plot()
