@@ -1,0 +1,62 @@
+def get_product(array, product=None):
+  if len(array) == 0:
+    return 0
+  if product is None:
+    product = 1
+  product = product * array[0]
+  if len(array) == 1:
+    return product
+  return get_product(array[1:], product)
+
+
+class PowerArray:
+  def __init__(self, array):
+    self._array = array
+    self.array = self.clean_array()
+    self.queue = [] 
+
+  def clean_array(self):
+  	array = self._array
+  	for i, v in enumerate(array):
+  	  if v < -1000:
+  	  	array[i] = -1000
+  	  if v > 1000:
+  	    array[i] = 1000
+  	return array
+  	
+  def get_positives(self):
+    return [ i for i in self.array if i > 0 ]
+
+  def get_negatives(self):
+    negatives = [ i for i in self.array if i < 0 ]
+    negatives.sort()
+    if len(negatives) % 2 != 0:
+      negatives = negatives[:-1]
+    return negatives
+
+  def get_power(self):
+    positives = self.get_positives()
+    negatives = self.get_negatives()
+    self.queue.extend(positives)
+    self.queue.extend(negatives)
+    power = get_product(self.queue)
+    return str(power)
+
+
+def answer(xs):
+  xs = PowerArray(xs)
+  return xs.get_power()
+
+print(answer([2,0,2,2,0]))
+print(answer([-2,-3,4,-5]))
+print(answer([2,-3,1,0,-5]))
+print(answer([-1100,-7,8,3,-2,-9]))
+print(answer([0,0,0,0,0,-1]))
+print(answer([]))
+print(answer([-1, -1]))
+print(answer([1]))
+print(answer([19234]))
+print(answer([-1, 7]))
+print(answer([1]))
+print(answer([-2]))
+

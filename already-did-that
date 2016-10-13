@@ -1,0 +1,53 @@
+# n = random minion id
+# k = length of n
+# b = base of n
+# x = n in descending order ( largest to smallest )
+# y = n in ascending order ( smallest to largest)
+# z = x -y (with leading zeroes if necessary)
+
+def dec_to_base(base, number):
+  s = ""
+  number = int(number)
+  while number:
+    s = str(number % base) + s
+    number = number / base
+  if s == '':
+    s = '0'
+  return s
+
+def wrapped():
+  history = []
+  def get_next_wrapped(obj):
+    if obj.id in history:
+      history.append(obj.id)
+      idx1 = history.index(obj.id)
+      idx2 = history.index(obj.id,idx1+1)
+      return idx2-idx1
+    history.append(obj.id)
+    return get_next_wrapped(Id(obj.next, obj.base, obj.k))
+  return get_next_wrapped
+
+class Id:
+  def __init__(self, id, base, k=None):
+    self.id = id
+    self.base = base
+    if k is None:
+      self.k = len(str(self.id))
+    else:
+      self.k = k
+    self.x = (lambda : ''.join(sorted(str(self.id), reverse=True)))()
+    self.y = (lambda : ''.join(sorted(str(self.id))))()
+    self.z = int(dec_to_base(self.base,(int(self.x, self.base) - int(self.y, self.base))))
+    self.next = (lambda : "{:0{k}d}".format(self.z, k=self.k))()
+  def __str__(self):
+    return """ id: {}, k: {}, base: {}, x: {}, y: {}, z: {}, next: {} """.format(self.id, self.k, self.base, self.x, self.y, self.z, self.next)
+
+def answer(id, base):
+  get_next = wrapped()
+  obj = Id(id, base)
+  return(get_next(obj))
+
+print(answer("1211", 10))
+print(answer("210022", 3))
+print(answer("10", 3))
+print(answer("0", 3))

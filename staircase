@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+
+import timeit
+
+## number of tuples:
+# (n-1)/2, round down
+## number of triples:
+# 
+#any_in = lambda x, y: any(i in y for i in x)
+
+# def is_valid(staircases, num_bricks, staircase ):
+#   if staircase in staircases:
+#     #print("DUPLICATE!")
+#     return False
+#   if sum(staircase) != num_bricks:
+#     #print("BAD MATH! %d: %s" % (num_bricks, staircase))
+#     return False
+#   return True
+
+
+class BrickStash:
+  def __init__(self, num_bricks):
+    self.num_bricks = num_bricks
+    self.staircases = []
+    self.get_combos(self.num_bricks)
+
+  def get_combos(self, lval, carried=None, rval=0):
+    if carried is None:
+      carried = []
+    if rval == 0:
+      lval -= 1
+      rval += 1
+    while lval > 1:
+      if lval in carried or rval in carried:
+        # print("duplicate!")
+        return self.get_combos(lval-1, carried, rval+1)
+      staircase = set([rval] + [lval] + carried)
+      if staircase in self.staircases or sum(staircase) != self.num_bricks:
+        # print("invalid!")
+        return self.get_combos(lval-1, carried, rval+1)
+      self.staircases.append(staircase)
+      # print(staircase)
+      # print("num bricks: %s, lval: %s, rval: %s, carried: %s" % (self.num_bricks, lval, rval, carried))
+      to_carry = carried + [rval]
+      self.get_combos(lval, to_carry)
+
+
+def answer(n):
+ results = BrickStash(n)
+ print(n),
+ # print(results.staircases),
+ # print(len(results.staircases))
+ print(len([i for i in results.staircases if len(i) == 3])),
+ print((n-2)/2)
+ return (len(results.staircases), 
+        len([i for i in results.staircases if len(i) == 2]), 
+        len([i for i in results.staircases if len(i) == 3]),
+        len([i for i in results.staircases if len(i) == 4]),
+        len([i for i in results.staircases if len(i) == 5]))
+
+# t = timeit.Timer('answer(10)', "from __main__ import answer")
+# print t.timeit(100)
+# t = timeit.Timer('answer(20)', "from __main__ import answer")
+# print t.timeit(100)
+# t = timeit.Timer('answer(40)', "from __main__ import answer")
+# print t.timeit(100)
+
+
+x = []
+y2 = []
+y3 = []
+y4 = []
+y5 = []
+
+for i in range(1,50):
+  x.append(i)
+  y2.append(answer(i)[1])
+  y3.append(answer(i)[2])
+  y4.append(answer(i)[3])
+  y5.append(answer(i)[4])
+# print(answer(10))
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+plt.plot(x,y2, label='y2')
+plt.plot(x,y3, label='y3')
+plt.plot(x,y4, label='y4')
+plt.plot(x,y5, label='y5')
+plt.legend(loc='upper center', shadow=True)
+plt.show()
+
