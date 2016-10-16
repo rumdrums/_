@@ -46,13 +46,12 @@ def answer(n):
  print("%03d" % len([i for i in results.staircases if len(i) == 8])),
  print("%03d" % len([i for i in results.staircases if len(i) == 9])),
  print("%03d" % len([i for i in results.staircases if len(i) == 10])),
- print(len(results.staircases))
- print([i for i in results.staircases if len(i) == 7])
+ print(results.staircases)
  return len(results.staircases)
 
-for i in range(3,37):
-  answer(i)
-#answer(12)
+#for i in range(3,37):
+#  answer(i)
+answer(5)
 
 #t = timeit.Timer('answer(10)', "from __main__ import answer")
 #print t.timeit(100)
